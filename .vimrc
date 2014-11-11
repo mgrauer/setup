@@ -9,7 +9,12 @@ set tabstop=4
 set shiftwidth=4
 set expandtab
 
+" toggle showing end of line chars and tabs with \l in normal mode
+nmap <leader>l :set list!<CR>
 
+" for ctrl p
+" needs to be installed externally
+set runtimepath^=~/.vim/bundle/ctrlp.vim
 
 set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
