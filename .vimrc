@@ -4,6 +4,7 @@
 set nocompatible
 filetype off
 
+set hlsearch
 " prefer spaces to tabs
 set tabstop=4
 set shiftwidth=4
@@ -20,7 +21,7 @@ set rtp+=~/.vim/bundle/vundle/
 call vundle#rc()
 
 " let Vundle manage Vundle
-" required! 
+" required!
 Bundle 'gmarik/vundle'
 
 Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
@@ -29,11 +30,19 @@ set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
 set laststatus=2
 
 Bundle 'tpope/vim-fugitive'
-
+Bundle 'scrooloose/syntastic'
+Bundle 'ntpeters/vim-better-whitespace'
+autocmd FileType php,py autocmd BufWritePre <buffer> StripWhitespace
 Bundle 'scrooloose/nerdtree'
 map <S-t> :NERDTreeToggle<CR>
+" tells nerdtree to come up in split window with focus
+let NERDTreeHijackNetrw=1
 
-
+" required Vundle install of Solarized
+" and
+" mv bundle/Solarized/colors/solarized.vim colors/
+set background=dark
+colorscheme solarized
 
 " The bundles you install will be listed here
 filetype plugin indent on
