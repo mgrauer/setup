@@ -41,8 +41,10 @@ let NERDTreeHijackNetrw=1
 " required Vundle install of Solarized
 " and
 " mv bundle/Solarized/colors/solarized.vim colors/
+set t_Co=256
 set background=dark
-colorscheme solarized
+syntax on
+colorscheme wombat
 
 " The bundles you install will be listed here
 filetype plugin indent on
