@@ -1,12 +1,14 @@
-" follow recipe from
-" http://unlogic.co.uk/2013/02/08/vim-as-a-python-ide/
-
 set nocompatible
 filetype off
+   
 
 set hlsearch
 set incsearch
 
+let mapleader = "\<Space>"
+nnoremap <Leader>o :CtrlP<CR>
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>t :tabe<CR>
 
 
 
@@ -39,8 +41,6 @@ function! SummarizeTabs()
     endtry
 endfunction
 
-
-
 " tabs turn into spaces
 set tabstop=4
 set shiftwidth=4
@@ -54,60 +54,29 @@ set pastetoggle=<F2>
 set showmode
 
 
-" use silver searcher for grep
-if executable('ag')
-    " Note we extract the column as well as the file and line number
-    set grepprg=ag\ --nogroup\ --nocolor\ --column
-    set grepformat=%f:%l:%c%m
-endif
-
-" bind K to grep word under cursor
-nnoremap K :grep! "\b<C-R><C-W>\b"<CR>:cw<CR>
-
-" bind \ (backward slash) to grep shortcut
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-nnoremap \ :Ag<SPACE>
-
-
-" toggle showing end of line chars and tabs with \l in normal mode
-nmap <leader>l :set list!<CR>
-
-" for ctrl p
-" needs to be installed externally
-set runtimepath^=~/.vim/bundle/ctrlp.vim
-
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
-
-" let Vundle manage Vundle
-" required!
-Bundle 'gmarik/vundle'
-
-Plugin 'scrooloose/nerdcommenter'
-
-"Bundle 'Lokaltog/powerline', {'rtp': 'powerline/bindings/vim/'}
-" Powerline setup
-"set guifont=DejaVu\ Sans\ Mono\ for\ Powerline\ 9
-"set laststatus=2
-
-Bundle 'tpope/vim-fugitive'
-Bundle 'scrooloose/syntastic'
-"Bundle 'ntpeters/vim-better-whitespace'
-Bundle 'scrooloose/nerdtree'
-map <S-t> :NERDTreeToggle<CR>
-" tells nerdtree to come up in split window with focus
-"let NERDTreeHijackNetrw=1
-
-" required Vundle install of Solarized
-" and
-" mv bundle/Solarized/colors/solarized.vim colors/
-"set t_Co=256
 set background=dark
 syntax on
-colorscheme wombat
+colorscheme wombat256mod
 
-" The bundles you install will be listed here
-filetype plugin indent on
+
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+
+" let Vundle manage Vundle
+" requidarkgreen!
+Plugin 'gmarik/vundle'
+
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-abolish'
+Plugin 'scrooloose/syntastic'
+Plugin 'scrooloose/nerdtree'
+Plugin 'kien/ctrlp.vim'
+
+" All of your Plugins must be added before the following line
+call vundle#end()            " requidarkgreen
+filetype plugin indent on    " requidarkgreen
 
 
 augroup vimrc_autocmds
@@ -115,31 +84,16 @@ augroup vimrc_autocmds
 "  " highlight characters past column 80
   autocmd FileType * highlight Excess ctermbg=DarkGrey guibg=Black
   autocmd FileType * match Excess /\%80v.*/
+  autocmd FileType * highlight ExtraWhite ctermbg=DarkGreen guibg=DarkGreen
+  autocmd FileType * match ExtraWhite /\s\+$/
   autocmd FileType * set nowrap
-"  autocmd FileType python highlight Excess ctermbg=DarkGrey guibg=Black
-"  autocmd FileType python match Excess /\%120v.*/
-"  autocmd FileType python set nowrap
 augroup END
-"
-"autocmd FileType js,java,php,py autocmd BufWritePre <buffer> StripWhitespace
 
 set ru
 highlight LineNr ctermfg=Black ctermbg=DarkGrey
 set number
 
 
-"function! <SID>StripTrailingWhitespaces()
-"    " Preparation: save last search, and cursor position.
-"    let _s=@/
-"    let l = line(".")
-"    let c = col(".")
-"    " Do the business:
-"    %s/\s\+$//e
-"    " Clean up: restore previous search history, and cursor position
-"    let @/=_s
-"    call cursor(l, c)
-"endfunction
-""autocmd BufWritePre *.py,*.js :call <SID>StripTrailingWhitespaces()
 
 function! Preserve(command)
   " Preparation: save last search, and cursor position.
@@ -160,10 +114,20 @@ nmap _= :call Preserve("normal gg=G")<CR>
 autocmd BufWritePre *.py,*.js call Preserve("%s/\\s\\+$//e")
 nnoremap <silent> <F5> :call  Preserve("%s/\\s\\+$//e")<CR>
 
-" highlight trailing space by adding to Todo group
-match Todo /\s\+$/
+
+" The Silver Searcher
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
 
 
-
-
-
+" bind \ (backward slash) to grep shortcut
+command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+nnoremap \ :Ag<SPACE>
